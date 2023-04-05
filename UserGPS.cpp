@@ -13,7 +13,7 @@ void UserGPS::encode(String raw) {
     i = 1;
   }
 
-  // i < 11 condition is applied because un-applying MIGHT make the serial monitor unresponsive
+  // i < 11 condition is applied because un-applying MIGHT make the serial monitor unresponsive.
   while (raw[i] != ' ' && i < 11) {
     if (raw[i] != '.') {
       int digit = raw[i] - '0';
@@ -28,9 +28,9 @@ void UserGPS::encode(String raw) {
     i += 2;
   } else i++;
 
-  //Check if longitude has 3 digits before decimal
+  // Check if longitude has 3 digits before decimal
   int j = i;
-  //diff < 4 is also applied because un-applying MIGHT make the serial monitor unresponsive.
+  // diff < 4 is also applied because un-applying MIGHT make the serial monitor unresponsive.
   while (raw[j] != '.' && diff < 4) { 
     j++; 
     diff++;
@@ -38,7 +38,7 @@ void UserGPS::encode(String raw) {
   
   exp = (diff > 2) ? 2 : 1;
   
-  //applying i < 23 DEFINITELY prevents the serial monitor from becoming unresponsive.
+  // applying i < 23 DEFINITELY prevents the serial monitor from becoming unresponsive.
   while (i < raw.length() && i < 23) {
     if (raw[i] != '.') {
       int digit = raw[i] - '0';
