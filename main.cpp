@@ -3,7 +3,7 @@
 #include <BluetoothSerial.h>
 
 int i = 0; 
-TinyGPSPlus gps;
+Rover rover;
 BluetoothSerial SerialBT;      //Bluetooth Serial
 HardwareSerial SerialPort(2);  //Serial port for UART communication
 
@@ -15,34 +15,34 @@ void setup() {
 
 void loop() {
   String data = "";
-  UserGPS user;  // defined in loop so that previous values get erased with each cycle
+  User user;  // defined in loop so that previous values get erased with each cycle
   if (SerialBT.available()) {
     while (SerialBT.available()) {
       char c = SerialBT.read();
       data += c;
     }
     data.trim();
+
+
     if (i > 5) {
       /* 
       Starting to encode data after a couple of void loops 
       may help in avoiding garbage values on startup. 
       */
       user.encode(data);
+      rover.getHeading();
+    }
+    if (SerialPort.available()) {
+      rover.encode(SerialPort.read());
+      Serial.print("Rover location:\n");
+      Serial.print(rover.lat(), 6);
+      Serial.print(' ');
+      Serial.println(rover.lng(), 6);
     }
     Serial.print("User location:\n");
-    Serial.print(user.location.lat(), 6);
+    Serial.print(user.lat(), 6);
     Serial.print(' ');
-    Serial.println(user.location.lng(), 6);
-    
-    if (SerialPort.available()) {
-
-      gps.encode(SerialPort.read());
-      Serial.print("Rover location:\n");
-      Serial.print(gps.location.lat(), 6);
-      Serial.print(' ');
-      Serial.println(gps.location.lng(), 6);
-     
-    }
+    Serial.println(user.lng(), 6);
     
     delay(3000);
     i++;

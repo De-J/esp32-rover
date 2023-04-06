@@ -1,10 +1,36 @@
-#include "UserGPS.h"
+#include "User.h"
 
-UserGPSLocation::UserGPSLocation() 
+Rover::Rover() {
+  compass.init();
+}
+
+/* wrapper function implementation BEGIN */
+
+bool Rover::encode(char c) {
+  return loc.encode(c);
+}
+
+int Rover::getHeading() {
+  compass.read();
+  return (compass.getAzimuth());
+}
+
+double Rover::lat() {
+  return loc.location.lat();
+}
+
+double Rover::lng() {
+  return loc.location.lng();
+}
+
+/* wrapper function implementation END */
+
+
+UserLocation::UserLocation() 
 	: Lat(0)
 	, Lng(0) {}
 
-void UserGPS::encode(String raw) {
+void UserLocation::encode(String raw) {
   bool latNegative = false, lngNegative = false;
   int i = 0, exp = 1, diff = 0;
   
@@ -18,7 +44,7 @@ void UserGPS::encode(String raw) {
     if (raw[i] != '.') {
       int digit = raw[i] - '0';
       double val = digit * pow(10, exp--);
-      location.Lat += val;
+      Lat += val;
     }
     i++;
   }
@@ -43,10 +69,22 @@ void UserGPS::encode(String raw) {
     if (raw[i] != '.') {
       int digit = raw[i] - '0';
       double val = digit * pow(10, exp--);
-      location.Lng += val;
+      Lng += val;
     }
     i++;
   }
-  location.Lat *= (latNegative) ? -1 : 1;
-  location.Lng *= (lngNegative) ? -1 : 1;
+  Lat *= (latNegative) ? -1 : 1;
+  Lng *= (lngNegative) ? -1 : 1;
+}
+
+void User::encode(String raw) {
+  location.encode(raw);
+}
+
+double User::lat() {
+  return location.lat();
+}
+
+double User::lng() {
+  return location.lng();
 }
