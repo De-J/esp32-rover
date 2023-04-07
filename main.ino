@@ -1,21 +1,27 @@
 #include <TinyGPS++.h>
 #include <HardwareSerial.h>
 #include <BluetoothSerial.h>
-
-int i = 0; 
+#include <QMC5883LCompass.h>
+#include "UserGPS.h"
+ 
 TinyGPSPlus gps;
-BluetoothSerial SerialBT;      //Bluetooth Serial
-HardwareSerial SerialPort(2);  //Serial port for UART communication
+BluetoothSerial SerialBT;      // Bluetooth Serial to recieve user coordinates from phone
+HardwareSerial SerialPort(2);  // Serial port for UART communication for NEO6M
+QMC5883LCompass compass;
+int i = 0;
 
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("ESP32-BT-SLAVE");
   SerialPort.begin(9600, SERIAL_8N1, 16, 17);
+  compass.init();
 }
 
 void loop() {
   String data = "";
   UserGPS user;  // defined in loop so that previous values get erased with each cycle
+  
+  
   if (SerialBT.available()) {
     while (SerialBT.available()) {
       char c = SerialBT.read();
